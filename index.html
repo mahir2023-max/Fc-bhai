@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Wolcome to FC bhai</title>
+  <style>
+    :root{--bg:#0f172a;--card:#0b1220;--accent:#7c3aed;--text:#e6eef8}
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;background:linear-gradient(180deg,#071126 0%, #071b2a 100%);color:var(--text)}
+
+    /* Loading overlay */
+    .overlay{
+      position:fixed;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;background:radial-gradient(circle at 30% 20%, rgba(124,58,237,0.12), transparent 20%), rgba(2,6,23,0.9);z-index:9999;backdrop-filter: blur(2px);
+    }
+    .logo{
+      font-size:28px;font-weight:700;letter-spacing:1px;color:var(--text);
+    }
+    .spinner{
+      width:72px;height:72px;border-radius:50%;display:grid;place-items:center;border:6px solid rgba(255,255,255,0.06);border-top-color:var(--accent);animation:spin 1s linear infinite;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* App layout */
+    .app{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px}
+    .card{width:100%;max-width:860px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:16px;padding:28px;box-shadow:0 8px 30px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.03)}
+    .header{display:flex;align-items:center;gap:16px}
+    .header .badge{background:linear-gradient(90deg,var(--accent),#4f46e5);padding:10px 14px;border-radius:12px;font-weight:700}
+    h1{margin:0;font-size:20px}
+    p.lead{margin:10px 0 0;color:rgba(230,238,248,0.9)}
+
+    .meta{margin-top:18px;display:flex;gap:12px;flex-wrap:wrap}
+    .meta .chip{background:rgba(255,255,255,0.03);padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,0.02)}
+
+    .big{margin-top:26px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));padding:18px;border-radius:12px}
+    .id{font-size:28px;font-weight:800;letter-spacing:0.6px}
+    .desc{margin-top:8px;color:rgba(230,238,248,0.85)}
+
+    footer{margin-top:18px;color:rgba(230,238,248,0.6);font-size:13px}
+
+    /* Hidden utility */
+    .hidden{display:none}
+
+    @media (max-width:520px){.logo{font-size:20px}.card{padding:18px}}
+  </style>
+</head>
+<body>
+
+  <!-- Loading overlay (shown only the first time user opens the site) -->
+  <div id="loadingOverlay" class="overlay hidden" aria-hidden="true">
+    <div class="logo">Wolcome to FC bhai</div>
+    <div class="spinner" role="status" aria-label="loading"></div>
+    <div style="opacity:0.9">Preparing your dashboard...</div>
+  </div>
+
+  <!-- Main app -->
+  <main class="app">
+    <section class="card" id="dashboard" aria-live="polite">
+      <div class="header">
+        <div class="badge">FC</div>
+        <div>
+          <h1>MAHIR17</h1>
+          <p class="lead">My fc id yo can play with me 1 v 1</p>
+        </div>
+      </div>
+
+      <div class="meta">
+        <div class="chip">Status: Online</div>
+        <div class="chip">Mode: 1v1 available</div>
+        <div class="chip">Welcome back!</div>
+      </div>
+
+      <div class="big">
+        <div class="id">MAHIR17</div>
+        <div class="desc">My fc id yo can play with me 1 v 1</div>
+      </div>
+
+      <footer>Tip: To hide the welcome screen on future visits, we store a small flag in your browser (localStorage).</footer>
+    </section>
+  </main>
+
+
+  <script>
+    (function(){
+      const overlay = document.getElementById('loadingOverlay');
+      const dashboard = document.getElementById('dashboard');
+
+      // If user has NOT visited before, show loading overlay for 2 seconds.
+      const VISIT_KEY = 'wolcome_fc_seen_v1';
+      const seen = localStorage.getItem(VISIT_KEY);
+
+      function showOverlayThenHide(){
+        overlay.classList.remove('hidden');
+        overlay.setAttribute('aria-hidden','false');
+        dashboard.setAttribute('aria-hidden','true');
+
+        // show for exactly 2000ms then remove and reveal dashboard
+        setTimeout(()=>{
+          overlay.classList.add('hidden');
+          overlay.setAttribute('aria-hidden','true');
+          dashboard.setAttribute('aria-hidden','false');
+
+          try{ localStorage.setItem(VISIT_KEY, Date.now().toString()); }catch(e){ /* ignore */ }
+        },2000);
+      }
+
+      if(!seen){
+        // first visit -> show the 2 second loading screen
+        showOverlayThenHide();
+      } else {
+        // not first visit -> ensure overlay hidden and dashboard visible
+        overlay.classList.add('hidden');
+        dashboard.setAttribute('aria-hidden','false');
+      }
+
+      // Accessibility: allow manual reset by pressing 'r' key (for testing)
+      window.addEventListener('keydown', (e)=>{
+        if(e.key.toLowerCase()==='r'){
+          try{ localStorage.removeItem(VISIT_KEY); alert('First-visit flag cleared. Reload to see the loading screen.'); }catch{} }
+      });
+    })();
+  </script>
+</body>
+</html>
